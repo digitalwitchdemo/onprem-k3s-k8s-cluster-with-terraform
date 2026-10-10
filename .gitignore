@@ -1,0 +1,12 @@
+# Terraform working files and state (state lives in S3)
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.tfstate.lock.info
+crash.log
+*.tfvars
+
+# Secrets created by terraform apply - never commit these
+*.pem
+node-token
+kubeconfig
