@@ -35,7 +35,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_OIDC_ARN }}
+          role-to-assume: ${{ secrets.AWS_OID_ARN }}
           aws-region: us-west-1
 
       - name: Install Terraform
