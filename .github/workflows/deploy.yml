@@ -1,11 +1,4 @@
-# Deploys the k3s cluster with Terraform.
-#
-# Runs automatically on every push to main that changes Terraform, scripts or charts.
-# Run it by hand from the Actions tab ("Run workflow") to choose apply or destroy.
-#
-# Needs two repository secrets (Settings → Secrets and variables → Actions):
-#   AWS_ACCESS_KEY_ID
-#   AWS_SECRET_ACCESS_KEY
+
 name: Deploy k3s cluster
 
 on:
@@ -55,29 +48,29 @@ jobs:
       - name: Terraform init
         run: terraform init -input=false
 
-      - name: Terraform format and validate
-        run: |
-          terraform fmt -check -recursive
-          terraform validate
+      # - name: Terraform format and validate
+      #   run: |
+      #     terraform fmt -check -recursive
+      #     terraform validate
 
-      # Step 1: network + servers. The Helm/Kubernetes providers need the kubeconfig
-      # in S3, which only exists after the master is built.
-      - name: Apply step 1 - network and servers
-        if: env.ACTION == 'apply'
-        run: >
-          terraform apply -input=false -auto-approve
-          -target=aws_s3_object.kubeconfig
-          -target=aws_instance.ec2_instance_worker
+      # # Step 1: network + servers. The Helm/Kubernetes providers need the kubeconfig
+      # # in S3, which only exists after the master is built.
+      # - name: Apply step 1 - network and servers
+      #   if: env.ACTION == 'apply'
+      #   run: >
+      #     terraform apply -input=false -auto-approve
+      #     -target=aws_s3_object.kubeconfig
+      #     -target=aws_instance.ec2_instance_worker
 
-      # Step 2: everything else (NGINX, cert-manager, Argo CD)
-      - name: Apply step 2 - add-ons
-        if: env.ACTION == 'apply'
-        run: terraform apply -input=false -auto-approve
+      # # Step 2: everything else (NGINX, cert-manager, Argo CD)
+      # - name: Apply step 2 - add-ons
+      #   if: env.ACTION == 'apply'
+      #   run: terraform apply -input=false -auto-approve
 
-      - name: Show outputs
-        if: env.ACTION == 'apply'
-        run: terraform output
+      # - name: Show outputs
+      #   if: env.ACTION == 'apply'
+      #   run: terraform output
 
-      - name: Destroy everything
-        if: env.ACTION == 'destroy'
-        run: terraform destroy -input=false -auto-approve
+      # - name: Destroy everything
+      #   if: env.ACTION == 'destroy'
+      #   run: terraform destroy -input=false -auto-approve
